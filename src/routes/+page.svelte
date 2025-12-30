@@ -16,9 +16,21 @@
                 </span>
                 <br />
                 <span class="bg-linear-to-r from-amber-400 to-sky-400 bg-clip-text text-transparent">
-                    finite possibilities <span class="text-2xl font-bold tracking-tight">jk</span>
+                    finite possibilities <span class="text-2xl font-bold tracking-tight">(jk)</span>
                 </span>
             </h1>
+            <div class="flex justify-center gap-4">
+                <Button href="/dashboard" variant="default" size="lg">Get Started</Button>
+                <Button href="/" variant="outline" size="lg">Learn More</Button>
+            </div>
         </div>
-    </div>
+</div>
+    <!--<div id="features" class="px-6 py-20">
+        <div class="mx-auto max-w-5xl">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Everything you need</h2>
+                <p class="text-xl text-zinc-400">Powerful features, simple interface</p>
+            </div>
+        </div>
+    </div> -->
 </div>
