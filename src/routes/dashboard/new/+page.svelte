@@ -120,7 +120,7 @@
             Short link
           </span>
           <span class="text-sm font-mono text-zinc-900 dark:text-zinc-50 truncate">
-            longy.vejas.zip/
+            longy.vercel.app/
             <span class="opacity-80">
               {(form?.values?.slug ?? "your-slug").toString() || "your-slug"}
             </span>
