@@ -104,9 +104,9 @@
                                 <Button href="/dashboard" variant="outline" size="lg">Get Started</Button>
                             </div>
                          </div>
-                        <div class="bg-zinc-900 rounded-2xl p-8 border border-zinc-800 hover:border-zinc-700 transition-colors">
+                        <div class="bg-white-300 dark:bg-zinc-900 rounded-2xl p-8 border border-white-600 hover:border-white-800 transition-colors">
                             <h3 class="text-2xl font-semibold mb-4">Support Plan</h3>
-                            <p class="text-zinc-400 mb-6">If you'd like to support me.</p>
+                            <p class="text-zinc-950 dark:text-zinc-400mb-6">If you'd like to support me.</p>
                             <ul class="space-y-4 mb-6">
                                 <li class="flex items-start gap-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-400 mt-1">

@@ -1,27 +1,27 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button/index.js";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+  import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
   import type { PageData } from "./$types";
   import EllipsisIcon from "@lucide/svelte/icons/ellipsis";
   import TrashIcon from "@lucide/svelte/icons/trash-2";
   import PencilIcon from "@lucide/svelte/icons/pencil";
 
   let { data }: { data: PageData } = $props();
+  
+  let editDialogOpen = $state(false);
+  let editingLink = $state<{ id: string; slug: string } | null>(null);
+  let newSlugValue = $state("");
 
-  function handleEditSlug(linkId: string, currentSlug: string) {
-    const newSlug = prompt(`Enter a new slug for "${currentSlug}":`, currentSlug);
-    
-    if (newSlug === null) {
-      // User cancelled
-      return;
-    }
+  function openEditDialog(linkId: string, currentSlug: string) {
+    editingLink = { id: linkId, slug: currentSlug };
+    newSlugValue = currentSlug;
+    editDialogOpen = true;
+  }
 
-    if (!newSlug.trim()) {
-      alert('Slug cannot be empty');
-      return;
-    }
+  function handleEditSubmit() {
+    if (!editingLink || !newSlugValue.trim()) return;
 
-    // Create and submit form programmatically
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = '?/editSlug';
@@ -29,12 +29,12 @@
     const linkIdInput = document.createElement('input');
     linkIdInput.type = 'hidden';
     linkIdInput.name = 'linkId';
-    linkIdInput.value = linkId;
+    linkIdInput.value = editingLink.id;
 
     const slugInput = document.createElement('input');
     slugInput.type = 'hidden';
     slugInput.name = 'newSlug';
-    slugInput.value = newSlug.trim();
+    slugInput.value = newSlugValue.trim();
 
     form.appendChild(linkIdInput);
     form.appendChild(slugInput);
@@ -198,7 +198,7 @@
                   <button
                     type="button"
                     class="contents"
-                    onclick={() => handleEditSlug(link.id, link.slug)}
+                    onclick={() => openEditDialog(link.id, link.slug)}
                   >
                     <DropdownMenu.Item class="cursor-pointer">
                       <PencilIcon class="mr-2 h-4 w-4" />
@@ -235,3 +235,40 @@
     {/if}
   </section>
 </section>
+
+<!-- Edit Slug Dialog -->
+<AlertDialog.Root bind:open={editDialogOpen}>
+  <AlertDialog.Content class="max-w-md">
+    <AlertDialog.Header>
+      <AlertDialog.Title>Edit slug</AlertDialog.Title>
+      <AlertDialog.Description>
+        Change the slug for this link. Make sure it's unique and memorable.
+      </AlertDialog.Description>
+    </AlertDialog.Header>
+
+    <div class="py-4">
+      <label for="edit-slug-input" class="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2 block">
+        New slug
+      </label>
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-zinc-500 dark:text-zinc-400">
+          longy.vercel.app/
+        </span>
+        <input
+          id="edit-slug-input"
+          type="text"
+          bind:value={newSlugValue}
+          placeholder="my-custom-slug"
+          class="flex-1 rounded-md border border-zinc-200 bg-background px-3 py-2 text-sm text-zinc-900 shadow-xs outline-none transition focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50"
+        />
+      </div>
+    </div>
+
+    <AlertDialog.Footer>
+      <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+      <AlertDialog.Action onclick={handleEditSubmit}>
+        Save changes
+      </AlertDialog.Action>
+    </AlertDialog.Footer>
+  </AlertDialog.Content>
+</AlertDialog.Root>

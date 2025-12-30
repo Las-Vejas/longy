@@ -1,4 +1,4 @@
-import { redirect } from "@sveltejs/kit"; // note Redirect
+import { redirect } from "@sveltejs/kit";
 import { HACKCLUB_CLIENT_ID, HACKCLUB_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_URL } from "$env/static/public";
 import { supabase } from "$lib/supabase";
@@ -57,18 +57,19 @@ export const GET = async ({ url, cookies, locals }) => {
     // Extract first and last name from identity
     const firstName = userData.identity.first_name || null;
     const lastName = userData.identity.last_name || null;
+    const slackId = userData.identity.slack_id || null;
     
     // Use email prefix as username
     const userName = userData.identity.primary_email?.split('@')[0] || 'user';
     
-    console.log('Extracted:', { userName, firstName, lastName });
+    console.log('Extracted:', { userName, firstName, lastName, slackId });
 
-    // Store or update user in database
+    // Store or update user in database - check by slack_id OR email
     const { data: existingUser } = await supabase
       .from("users")
-      .select("id")
-      .eq("slack_id", userData.identity.id)
-      .single();
+      .select("id, slack_id")
+      .or(`slack_id.eq.${slackId},email.eq.${userData.identity.primary_email}`)
+      .maybeSingle();
 
     let userId: string;
 
@@ -77,6 +78,7 @@ export const GET = async ({ url, cookies, locals }) => {
       await supabase
         .from("users")
         .update({
+          slack_id: slackId,  // Update slack_id in case it was missing
           name: userName,
           email: userData.identity.primary_email,
           first_name: firstName,
@@ -90,7 +92,7 @@ export const GET = async ({ url, cookies, locals }) => {
       const { data: newUser, error } = await supabase
         .from("users")
         .insert({
-          slack_id: userData.identity.id,
+          slack_id: slackId,
           email: userData.identity.primary_email,
           name: userName,
           first_name: firstName,
@@ -123,8 +125,7 @@ export const GET = async ({ url, cookies, locals }) => {
     if (error instanceof redirect) {
       throw error;
     }
-
-    console.error("Auth callback error:", error);
+    console.error('Auth callback error:', error);
     throw redirect(302, "/?error=oauth_failed");
   }
 };
