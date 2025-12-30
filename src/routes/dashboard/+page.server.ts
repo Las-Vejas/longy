@@ -63,5 +63,50 @@ export const actions: Actions = {
     }
 
     return { success: true };
+  },
+
+  editSlug: async ({ request, locals }) => {
+    if (!locals.userId) {
+      throw redirect(302, '/auth/login');
+    }
+
+    const data = await request.formData();
+    const linkId = data.get('linkId');
+    const newSlug = data.get('newSlug');
+
+    if (typeof linkId !== 'string' || !linkId) {
+      return fail(400, { error: 'Invalid link ID' });
+    }
+
+    if (typeof newSlug !== 'string' || !newSlug.trim()) {
+      return fail(400, { error: 'Slug cannot be empty' });
+    }
+
+    const trimmedSlug = newSlug.trim();
+
+    // Check if slug already exists
+    const { data: existing } = await supabase
+      .from('links')
+      .select('id')
+      .eq('slug', trimmedSlug)
+      .maybeSingle();
+
+    if (existing) {
+      return fail(400, { error: `Slug "${trimmedSlug}" is already taken` });
+    }
+
+    // Update the slug (only if it belongs to this user)
+    const { error } = await supabase
+      .from('links')
+      .update({ slug: trimmedSlug })
+      .eq('id', linkId)
+      .eq('user_id', locals.userId);
+
+    if (error) {
+      console.error('Update slug error:', error);
+      return fail(500, { error: 'Failed to update slug' });
+    }
+
+    return { success: true };
   }
 };

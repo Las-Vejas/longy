@@ -4,8 +4,43 @@
   import type { PageData } from "./$types";
   import EllipsisIcon from "@lucide/svelte/icons/ellipsis";
   import TrashIcon from "@lucide/svelte/icons/trash-2";
+  import PencilIcon from "@lucide/svelte/icons/pencil";
 
   let { data }: { data: PageData } = $props();
+
+  function handleEditSlug(linkId: string, currentSlug: string) {
+    const newSlug = prompt(`Enter a new slug for "${currentSlug}":`, currentSlug);
+    
+    if (newSlug === null) {
+      // User cancelled
+      return;
+    }
+
+    if (!newSlug.trim()) {
+      alert('Slug cannot be empty');
+      return;
+    }
+
+    // Create and submit form programmatically
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '?/editSlug';
+
+    const linkIdInput = document.createElement('input');
+    linkIdInput.type = 'hidden';
+    linkIdInput.name = 'linkId';
+    linkIdInput.value = linkId;
+
+    const slugInput = document.createElement('input');
+    slugInput.type = 'hidden';
+    slugInput.name = 'newSlug';
+    slugInput.value = newSlug.trim();
+
+    form.appendChild(linkIdInput);
+    form.appendChild(slugInput);
+    document.body.appendChild(form);
+    form.submit();
+  }
 </script>
 
 <section class="max-w-6xl mx-auto px-6 py-10 space-y-10">
@@ -68,7 +103,9 @@
       </p>
       <p class="mt-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 truncate">
         {#if data.topLink}
-          <a href={"https://longy.vercel.app/" + data.topLink.slug} target="_blank" rel="noreferrer">https://longy.vercel.app/{data.topLink.slug}</a>
+          <a href={"https://longy.vercel.app/" + data.topLink.slug} target="_blank" rel="noreferrer">
+            longy.vercel.app/{data.topLink.slug}
+          </a>
         {:else}
           —
         {/if}
@@ -123,7 +160,7 @@
                   target="_blank"
                   rel="noreferrer"
                 >
-                  https://longy.vercel.app/{link.slug}
+                  longy.vercel.app/{link.slug}
                 </a>
               </div>
               <p class="text-xs text-zinc-500 dark:text-zinc-400 break-all">
@@ -158,6 +195,17 @@
                   </DropdownMenu.Label>
                   <DropdownMenu.Separator />
                   
+                  <button
+                    type="button"
+                    class="contents"
+                    onclick={() => handleEditSlug(link.id, link.slug)}
+                  >
+                    <DropdownMenu.Item class="cursor-pointer">
+                      <PencilIcon class="mr-2 h-4 w-4" />
+                      Edit slug
+                    </DropdownMenu.Item>
+                  </button>
+
                   <form method="POST" action="?/delete" class="contents">
                     <input type="hidden" name="linkId" value={link.id} />
                     <button
