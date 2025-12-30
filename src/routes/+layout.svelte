@@ -41,7 +41,7 @@
 			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
 				<div>
-					<h3 class="text-lg font-bold mb-3">shawty</h3>
+					<h3 class="text-lg font-bold mb-3">longy</h3>
 					<p class="text-sm ">
 						Simple and short links.
 					</p>
@@ -60,13 +60,13 @@
 					<h4 class="text-sm font-semibold mb-3">Connect</h4>
 					<ul class="space-y-2 text-sm">
 						<li><a href="https://hackclub.enterprise.slack.com/team/U0930DMR4BA" class="hover:text-zinc-700 hover:dark:text-zinc-200 transition-colors">@Vejas on Slack</a></li>
-						<li><a href="https://github.com/las-vejas/longy" class="hover:text-zinc-700 hover:dark:text-zinc-200 transition-colors">GitHub Repo</a></li>
+						<li><a href="https://github.com/las-vejas/longy" class="hover:text-zinc-700 hover:dark:text-zinc-200 transition-colors">Repo</a></li>
 					</ul>
 				</div>	
 		</div>
 		<!-- Bottom bar -->
 		<div class="mt-8 pt-6 border-t border-zinc-300 dark:border-zinc-700 flex items-center justify-between text-sm text-zinc-400">
-			<p>&copy; {new Date().getFullYear()} shawty. Built with ❤️ by <a href="https://vejas.zip" class="text-decoration-underline">Vejas</a></p>
+			<p>&copy; {new Date().getFullYear()} longy. Built with ❤️ by <a href="https://vejas.zip" class="text-decoration-underline">Vejas</a></p>
 			<DropdownMenu.Root>
   					<DropdownMenu.Trigger class={buttonVariants({ variant: "outline", size: "icon" })}>
 						<SunIcon class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all! dark:scale-0 dark:-rotate-90"/>
@@ -79,6 +79,7 @@
     					<DropdownMenu.Item onclick={() => resetMode()}>System</DropdownMenu.Item>
   					</DropdownMenu.Content>
 				</DropdownMenu.Root>
+			</div>
 		</div>
 	</footer> 
 				
